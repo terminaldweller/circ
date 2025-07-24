@@ -6,9 +6,6 @@ import (
 	"log"
 	"net"
 	"net/url"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/lrstanley/girc"
@@ -16,9 +13,6 @@ import (
 )
 
 func main() {
-	quitChannel := make(chan os.Signal, 1)
-	signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
-
 	Server := flag.String("address", "", "IRC server address")
 	Port := flag.Int("port", 6697, "IRC server port")
 	TLS := flag.Bool("tls", true, "Use TLS for IRC connection")
@@ -63,6 +57,12 @@ func main() {
 			c.Cmd.Join(*Channel)
 			c.Cmd.Message(*Channel, *Message)
 		}
+
+		c.Quit("")
+	})
+
+	irc.Handlers.AddBg(girc.PRIVMSG, func(_ *girc.Client, e girc.Event) {
+		log.Println("Received message:", e.String())
 	})
 
 	var dialer proxy.Dialer
@@ -85,6 +85,4 @@ func main() {
 		log.Printf("Failed to connect to IRC server: %v", err)
 		panic(err)
 	}
-
-	<-quitChannel
 }
