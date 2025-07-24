@@ -1,0 +1,4 @@
+github.com/lrstanley/girc v1.1.0 h1:LxDIjQIAEM/Dxm+l+fx8osDDGm5T2ZWznkcnjrQCUqE=
+github.com/lrstanley/girc v1.1.0/go.mod h1:lgrnhcF8bg/Bd5HA5DOb4Z+uGqUqGnp4skr+J2GwVgI=
+golang.org/x/net v0.42.0 h1:jzkYrhi3YQWD6MLBJcsklgQsoAcw89EcZbJw8Z614hs=
+golang.org/x/net v0.42.0/go.mod h1:FF1RA5d3u7nAYA4z2TkclSCKh68eSXtiFwcWQpPXdt8=
