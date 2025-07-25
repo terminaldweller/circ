@@ -8,6 +8,8 @@ Usage of ./circ:
         IRC server address
   -channel string
         IRC channel to join
+  -interactive
+        Run in interactive mode (not implemented)
   -message string
         Message to send to the channel (default "Hello, IRC!")
   -nick string
@@ -20,6 +22,8 @@ Usage of ./circ:
         IRC SASL password
   -sasl-user string
         IRC SASL username
+  -send-raw
+        Send raw command to the server
   -skip-tls-verify
         Skip TLS certificate verification
   -target string

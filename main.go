@@ -1,20 +1,48 @@
 package main
 
 import (
+	"bufio"
 	"crypto/tls"
 	"flag"
 	"log"
 	"net"
 	"net/url"
+	"os"
+	"os/signal"
+	"strings"
+	"syscall"
 	"time"
 
 	"github.com/lrstanley/girc"
 	"golang.org/x/net/proxy"
 )
 
+const (
+	PingDelay      = 60 * time.Second
+	PingTimeout    = 30 * time.Second
+	ProxyTimeout   = 10 * time.Second
+	DefaultTLSPort = 6697
+)
+
+func InteractiveCLI(client *girc.Client, channel string, isRaw bool) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		if isRaw {
+			err := client.Cmd.SendRaw(scanner.Text())
+			if err != nil {
+				log.Println("Error sending raw command:", err)
+
+				continue
+			}
+		}
+
+		client.Cmd.Message(channel, scanner.Text())
+	}
+}
+
 func main() {
 	Server := flag.String("address", "", "IRC server address")
-	Port := flag.Int("port", 6697, "IRC server port")
+	Port := flag.Int("port", DefaultTLSPort, "IRC server port")
 	TLS := flag.Bool("tls", true, "Use TLS for IRC connection")
 	SkipTLSVerify := flag.Bool("skip-tls-verify", false, "Skip TLS certificate verification")
 	Channel := flag.String("channel", "", "IRC channel to join")
@@ -24,6 +52,8 @@ func main() {
 	Message := flag.String("message", "Hello, IRC!", "Message to send to the channel")
 	Target := flag.String("target", "", "Target for the message (channel or user)")
 	ProxyURL := flag.String("proxy", "", "Proxy URL (e.g., socks5://user:pass@host:port)")
+	SendRaw := flag.Bool("send-raw", false, "Send raw command to the server")
+	Interactive := flag.Bool("interactive", false, "Run in interactive mode (not implemented)")
 
 	flag.Parse()
 
@@ -38,8 +68,8 @@ func main() {
 			InsecureSkipVerify: *SkipTLSVerify,
 			ServerName:         *Server,
 		},
-		PingDelay:    60,
-		PingTimeout:  30,
+		PingDelay:    PingDelay,
+		PingTimeout:  PingTimeout,
 		GlobalFormat: true,
 	})
 
@@ -50,15 +80,35 @@ func main() {
 		}
 	}
 
-	irc.Handlers.AddBg(girc.CONNECTED, func(c *girc.Client, _ girc.Event) {
-		if *Target != "" {
-			c.Cmd.Message(*Target, *Message)
-		} else {
-			c.Cmd.Join(*Channel)
-			c.Cmd.Message(*Channel, *Message)
+	irc.Handlers.AddBg(girc.CONNECTED, func(client *girc.Client, _ girc.Event) {
+		if *SendRaw {
+			err := client.Cmd.SendRaw(*Message)
+			if err != nil {
+				log.Println(err)
+			}
+
+			return
 		}
 
-		c.Quit("")
+		if *Target != "" {
+			if strings.HasPrefix(*Target, "#") {
+				client.Cmd.Join(*Target)
+			}
+			client.Cmd.Message(*Target, *Message)
+		} else {
+			client.Cmd.Join(*Channel)
+			client.Cmd.Message(*Channel, *Message)
+		}
+
+		if !*Interactive {
+			client.Quit("")
+		} else {
+			if *Target != "" {
+				go InteractiveCLI(client, *Target, *SendRaw)
+			} else {
+				go InteractiveCLI(client, *Channel, *SendRaw)
+			}
+		}
 	})
 
 	irc.Handlers.AddBg(girc.PRIVMSG, func(_ *girc.Client, e girc.Event) {
@@ -74,7 +124,7 @@ func main() {
 			panic(err)
 		}
 
-		dialer, err = proxy.FromURL(proxyURL, &net.Dialer{Timeout: 10 * time.Second})
+		dialer, err = proxy.FromURL(proxyURL, &net.Dialer{Timeout: ProxyTimeout})
 		if err != nil {
 			log.Printf("Failed to create proxy dialer: %v", err)
 			panic(err)
@@ -84,5 +134,12 @@ func main() {
 	if err := irc.DialerConnect(dialer); err != nil {
 		log.Printf("Failed to connect to IRC server: %v", err)
 		panic(err)
+	}
+
+	if *Interactive {
+		quitChannel := make(chan os.Signal, 1)
+		signal.Notify(quitChannel, syscall.SIGINT, syscall.SIGTERM)
+
+		<-quitChannel
 	}
 }
