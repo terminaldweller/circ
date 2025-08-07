@@ -1,6 +1,13 @@
 # circ
-irc cli
 
+A simple irc cli tool that can be used in scripts to send messages/notifications to irc servers.
+
+example:
+```
+-sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "user"
+-sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel"
+-sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel" -interactive
+```
 ```txt
 $ circ -help
 Usage of ./circ:
@@ -9,7 +16,7 @@ Usage of ./circ:
   -channel string
         IRC channel to join
   -interactive
-        Run in interactive mode (not implemented)
+        Run in interactive mode
   -message string
         Message to send to the channel (default "Hello, IRC!")
   -nick string
@@ -31,3 +38,7 @@ Usage of ./circ:
   -tls
         Use TLS for IRC connection (default true)
 ```
+
+## Thanks
+
+* [girc](https://github.com/lrstanley/girc)
