@@ -53,7 +53,7 @@ func main() {
 	Target := flag.String("target", "", "Target for the message (channel or user)")
 	ProxyURL := flag.String("proxy", "", "Proxy URL (e.g., socks5://user:pass@host:port)")
 	SendRaw := flag.Bool("send-raw", false, "Send raw command to the server")
-	Interactive := flag.Bool("interactive", false, "Run in interactive mode (not implemented)")
+	Interactive := flag.Bool("interactive", false, "Run in interactive mode")
 	CertFile := flag.String("cert", "", "Path to TLS certificate file (optional)")
 	KeyFile := flag.String("key", "", "Path to TLS key file (optional)")
 

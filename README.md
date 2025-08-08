@@ -18,10 +18,14 @@ $ circ -help
 Usage of ./circ:
   -address string
         IRC server address
+  -cert string
+        Path to TLS certificate file (optional)
   -channel string
         IRC channel to join
   -interactive
-        Run in interactive mode
+        Run in interactive mode (not implemented)
+  -key string
+        Path to TLS key file (optional)
   -message string
         Message to send to the channel (default "Hello, IRC!")
   -nick string
