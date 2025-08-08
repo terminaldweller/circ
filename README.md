@@ -3,10 +3,12 @@
 A simple irc cli tool that can be used in scripts to send messages/notifications to irc servers.
 
 here are some examples:
-```
--sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "user"
--sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel"
--sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel" -interactive
+
+```bash
+circ -sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "user"
+circ -sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel"
+circ -sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel" -interactive
+rlwrap circ -key nick.key -cert nick.cer -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "user" -interactive
 ```
 
 If you pass the `-interactive` flag, your connection will not get cut after the message is sent and you keep communicating using the stdin.

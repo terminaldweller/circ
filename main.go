@@ -54,6 +54,8 @@ func main() {
 	ProxyURL := flag.String("proxy", "", "Proxy URL (e.g., socks5://user:pass@host:port)")
 	SendRaw := flag.Bool("send-raw", false, "Send raw command to the server")
 	Interactive := flag.Bool("interactive", false, "Run in interactive mode (not implemented)")
+	CertFile := flag.String("cert", "", "Path to TLS certificate file (optional)")
+	KeyFile := flag.String("key", "", "Path to TLS key file (optional)")
 
 	flag.Parse()
 
@@ -78,6 +80,16 @@ func main() {
 			User: *SASLName,
 			Pass: *SASLPassword,
 		}
+	}
+
+	if *CertFile != "" && *KeyFile != "" {
+		cert, err := tls.LoadX509KeyPair(*CertFile, *KeyFile)
+		if err != nil {
+			log.Printf("Failed to load TLS certificate: %v", err)
+			panic(err)
+		}
+
+		irc.Config.TLSConfig.Certificates = []tls.Certificate{cert}
 	}
 
 	irc.Handlers.AddBg(girc.CONNECTED, func(client *girc.Client, _ girc.Event) {
