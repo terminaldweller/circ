@@ -1,0 +1,8 @@
+# github.com/lrstanley/girc v1.1.0
+## explicit; go 1.18
+github.com/lrstanley/girc
+github.com/lrstanley/girc/internal/ctxgroup
+# golang.org/x/net v0.42.0
+## explicit; go 1.23.0
+golang.org/x/net/internal/socks
+golang.org/x/net/proxy
