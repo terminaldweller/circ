@@ -56,6 +56,7 @@ func main() {
 	Interactive := flag.Bool("interactive", false, "Run in interactive mode")
 	CertFile := flag.String("cert", "", "Path to TLS certificate file (optional)")
 	KeyFile := flag.String("key", "", "Path to TLS key file (optional)")
+	ChanPass := flag.String("chanpass", "", "password for channel if any")
 
 	flag.Parse()
 
@@ -104,11 +105,19 @@ func main() {
 
 		if *Target != "" {
 			if strings.HasPrefix(*Target, "#") {
-				client.Cmd.Join(*Target)
+				if *ChanPass == "" {
+					client.Cmd.Join(*Target)
+				} else {
+					client.Cmd.JoinKey(*Target, *ChanPass)
+				}
 			}
 			client.Cmd.Message(*Target, *Message)
 		} else {
-			client.Cmd.Join(*Channel)
+			if *ChanPass == "" {
+				client.Cmd.Join(*Channel)
+			} else {
+				client.Cmd.JoinKey(*Channel, *ChanPass)
+			}
 			client.Cmd.Message(*Channel, *Message)
 		}
 

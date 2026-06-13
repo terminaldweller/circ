@@ -22,8 +22,10 @@ Usage of ./circ:
         Path to TLS certificate file (optional)
   -channel string
         IRC channel to join
+  -chanpass string
+        password for channel if any
   -interactive
-        Run in interactive mode (not implemented)
+        Run in interactive mode
   -key string
         Path to TLS key file (optional)
   -message string
