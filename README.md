@@ -9,6 +9,7 @@ circ -sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address
 circ -sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel"
 circ -sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel" -interactive
 rlwrap circ -key nick.key -cert nick.cer -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "user" -interactive
+docker build -t circ . && docker run -it circ -sasl-pass "mysaslpassword" -sasl-user mysaslusername -nick mynick -address "irc.awesome.com" -port 6697 -message "hello" -target "#channel" -interactive
 ```
 
 If you pass the `-interactive` flag, your connection will not get cut after the message is sent and you keep communicating using the stdin.
