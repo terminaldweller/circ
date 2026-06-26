@@ -22,7 +22,7 @@ jobs:
     - name: Build
       run: |
         mkdir -p dist
-        go build -v -o dist/circ .
+        CGO_ENABLED=0 go build -mod=vendor -v -o dist/circ .
 
     - name: Test
       run: go test -v ./...
